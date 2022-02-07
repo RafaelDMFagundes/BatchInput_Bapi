@@ -1,0 +1,54 @@
+ # Programa criado com INCLUDE para declarar todas as variáveis e estruturas necessarias.
+ 
+ *&---------------------------------------------------------------------*
+*& Include          ZR_FSW_BATCH_RMORAES_TOP
+*&---------------------------------------------------------------------*
+TYPES:
+  BEGIN OF ty_maratxt,
+    matnr   TYPE mara-matnr, "codigo do material rolamento
+    maktx TYPE makt-maktx, "codigo do material lista tecnica generica
+
+  END OF ty_maratxt,
+
+" Batch input nova estrutura do campo de tabela
+  BEGIN OF ty_bdcdata,
+    program   TYPE bdcdata-program,  " Pool de módulos BDC
+    dynpro    TYPE bdcdata-dynpro,   " NÚmero de tela BDC
+    dynbegin  TYPE bdcdata-dynbegin, " Início BDC de uma tela
+    fnam      TYPE bdcdata-fnam,     " Nome do campo
+    fval      TYPE bdcdata-fval,     " Valor do campo BDC
+  END OF ty_bdcdata.
+
+" Tabela que recebe as informações crua do arquivo que será tratado
+DATA: BEGIN OF t_line OCCURS 0,
+        linha(108) TYPE c,
+      END OF t_line.
+
+
+" Tabelas Internas ....
+DATA: it_arqui    TYPE TABLE OF ty_maratxt,
+      it_bdcdata  TYPE TABLE OF ty_bdcdata,
+      it_msg      TYPE TABLE OF bdcmsgcoll WITH HEADER LINE.
+*      gt_message  TYPE TABLE OF ty_message.
+
+" Estruturas ...
+DATA: st_arqui   TYPE ty_maratxt,
+      st_bdcdata TYPE ty_bdcdata.
+*      st_message TYPE ty_message.
+
+
+" Variaveis ....
+DATA: vg_mode(1) TYPE c VALUE 'N', " informa o Modo do Call Transaction
+      vg_texto(100) TYPE c,        " Texto para o Indicator
+      vg_s TYPE c VALUE 'S',       " Informa o Update do call Transaction
+      mensg LIKE message VALUE IS INITIAL, " variavel que recebe retorno
+      msgno LIKE sy-msgno.
+
+******************************************************************
+*--------------Declaraçoes Chamadas Bapi -------------------------
+******************************************************************
+
+DATA: gt_material TYPE TABLE of BAPI_MAKT,
+      gs_head     TYPE BAPIMATHEAD,
+      gs_material TYPE BAPI_MAKT,
+      gs_return   TYPE BAPIRET2.
