@@ -1,0 +1,40 @@
+# Programa report principal 
+
+*&---------------------------------------------------------------------*
+*& Report ZR_FSW_BATCH_RMORAES
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT zr_fsw_batch_rmoraes.
+
+INCLUDE: zr_fsw_batch_rmoraes_top,
+         zr_fsw_batch_rmoraes_scr,
+         zr_fsw_batch_rmoraes_f01.
+
+
+*****************************************************
+*--------- Condições e performs chamar F01---------------
+*****************************************************
+START-OF-SELECTION.
+  IF p_shdb IS NOT INITIAL.
+
+    PERFORM: z_baixa_arquivo,
+             z_trata_arquivo,
+             z_monta_shdb,
+             z_manda_arquivo.
+
+    MESSAGE 'Programa alterado com sucesso' TYPE 'S' DISPLAY LIKE'S'.
+    RETURN.
+  ELSEIF p_shdb IS NOT INITIAL.
+    MESSAGE 'Programa não alterado' TYPE 'S' DISPLAY LIKE'E'.
+
+  ELSEIF p_bapi IS NOT INITIAL.
+    PERFORM:  z_baixa_arquivo,
+              z_trata_arquivo,
+              zf_monta_bapi.
+
+    MESSAGE 'Programa alterado com sucesso' TYPE 'S' DISPLAY LIKE'S'.
+    RETURN.
+  ELSEIF p_bapi IS NOT INITIAL.
+    MESSAGE 'Programa não alterado' TYPE 'S' DISPLAY LIKE'E'.
+  ENDIF.
