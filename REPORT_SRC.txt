@@ -1,0 +1,84 @@
+# Report criado para fazermos toda a seleção de tela.
+
+*&---------------------------------------------------------------------*
+*& Include          ZR_FSW_BATCH_RMORAES_SCR
+*&---------------------------------------------------------------------*
+**************************************************************************
+*----------- Parameters da tela com radio button grupo 1 *****************
+**************************************************************************
+SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE TEXT-001.
+
+  PARAMETERS: p_tela  TYPE c RADIOBUTTON GROUP b1 USER-COMMAND uc01 DEFAULT 'X',
+              p_arqui TYPE c RADIOBUTTON GROUP b1.
+
+SELECTION-SCREEN END OF BLOCK b1.
+
+**************************************************************************
+*---------- Parameters com entrada de Strings Tela -----------------------
+**************************************************************************
+SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE TEXT-002.
+  PARAMETERS: p_dest TYPE string MODIF ID R1,    " Texto ( Arquivo txt: )
+              p_log  TYPE string MODIF ID R1 " Texto ( Arquivo log: )
+              .
+SELECTION-SCREEN END OF BLOCK b2.
+
+**************************************************************************
+*---------- Parameters com entrada de Strings Arquivo --------------------
+**************************************************************************
+SELECTION-SCREEN BEGIN OF BLOCK b3 WITH FRAME TITLE TEXT-003.
+  PARAMETERS: p_mater TYPE string MODIF ID R2,
+              p_desc TYPE string MODIF ID R2
+              .
+SELECTION-SCREEN END OF BLOCK b3.
+
+**************************************************************************
+*---------- Parameters escolhada função ----------------------------------
+**************************************************************************
+SELECTION-SCREEN BEGIN OF BLOCK b4 WITH FRAME TITLE TEXT-004.
+
+  PARAMETERS: p_shdb  TYPE c RADIOBUTTON GROUP b2,
+              p_bapi  TYPE c RADIOBUTTON GROUP b2.
+
+SELECTION-SCREEN END OF BLOCK b4.
+
+
+  " Quando for requisitado um valor no 'Parameter faça ...
+
+AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_dest.
+  PERFORM z_busca_arquivo.
+
+  " Quando for requisitado um valor no 'Parameter faça ...
+
+AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_log.
+  PERFORM z_mostra_local.
+
+
+**************************************************************************
+*---------- Loop at screen com condições ---------------------------------
+**************************************************************************
+AT SELECTION-SCREEN OUTPUT.
+
+  LOOP AT SCREEN.
+
+    IF screen-group1 EQ 'R1'.
+      IF p_tela IS NOT INITIAL.
+        screen-input     = '1'.
+        screen-invisible = '0'.
+      ELSE.
+        screen-input     = '0'.
+        screen-invisible = '1'.
+      ENDIF.
+    ENDIF.
+
+    IF screen-group1 = 'R2'.
+
+      IF p_arqui IS NOT INITIAL.
+        screen-input     = '1'.
+        screen-invisible = '0'.
+      ELSE.
+        screen-input     = '0'.
+        screen-invisible = '1'.
+      ENDIF.
+    ENDIF.
+   MODIFY SCREEN.
+  ENDLOOP.
